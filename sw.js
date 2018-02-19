@@ -5,7 +5,8 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
     self.clients.claim();
 
-    navigator.permissions.query({name: 'notifications'}).then((...args) => {
-        debugger
-    });
+});
+
+navigator.permissions.query({name: 'notifications'}).then((...args) => {
+    debugger
 });
