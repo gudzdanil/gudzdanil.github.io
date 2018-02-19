@@ -1,3 +1,6 @@
 navigator.serviceWorker.register('/sw.js').then(registration => {
-    debugger
 });
+
+Notification.requestPermission((...args) => {
+    debugger
+})
