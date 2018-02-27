@@ -3,9 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    
+    <style>
+        html, body {
+            height: 100%;
+            margin:0;
+            font-size: 18px;
+            font-family: Arial serif;
+        }
+
+        h1 {
+            height: 40px;
+            text-align: center;
+            margin: 0;
+        }
+
+        main {
+            height: calc(100% - 50px);
+            display: grid;
+            grid: 50% 50% / 40% auto;
+            grid-gap: 10px;
+            align-items: stretch;
+            justify-items: stretch;
+            padding: 10px;
+        }
+
+        .area {
+            border: 1px solid black;
+            padding: 25px;
+            position: relative;
+        }
+
+        .area.area--parameter {
+            display: grid;
+            grid: repeat(4, auto) / 50% 50%;
+        }
+        .area.area--parameter::before {
+            font-size: 14px;
+            content: 'Parameter';
+            position: absolute;
+            transform: translate(20px, -50%);
+            background: #fff;
+            padding: 0 5px;
+        }
+        .param.param--number input{
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<script src="bundle.js"></script>
+<h1>Label page title</h1>
+<main>
+    <div class="area area--parameter">
+        <div>
+            <label><input type="checkbox"> Checkbox</label>
+        </div>
+        <div>
+            <label><input type="checkbox"> Checkbox</label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+        <div class="param param--number">
+            <label>Label <input type="number" value="0"></label>
+        </div>
+    </div>
+    <div class="area"></div>
+    <div class="area area--parameter">
+    </div>
+    <div class="area"></div>
+</main>
 </body>
 </html>
