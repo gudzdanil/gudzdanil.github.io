@@ -13,15 +13,18 @@ interface FullPointData {
 	v: 'top' | 'bottom' | 'proportional';
 }
 
-export function getPath(points: PointData[], border: number): string {
-	return genPath(getBorderedPoints(points, border));
+export function getPath(points: PointData[], border: number, outerOnly: boolean): string {
+	return genPath(getBorderedPoints(points, border, outerOnly));
 }
 
-export function getPolygon(points: PointData[], border: number): string {
-	return genPolygon(getBorderedPoints(points, border));
+export function getPolygon(points: PointData[], border: number, outerOnly: boolean): string {
+	return genPolygon(getBorderedPoints(points, border, outerOnly));
 }
 
-function getBorderedPoints(pts: PointData[], border: number): FullPointData[] {
+function getBorderedPoints(pts: PointData[], border: number, outerOnly: boolean): (FullPointData[] | PointData[]) {
+	if(outerOnly) {
+		return pts;
+	}
 	const innerLines: [Coord, Coord][] = [];
 	if(pts.length < 3) return [];
 	const ptsClosed: PointData[] = [...pts, pts[0]];
@@ -73,23 +76,29 @@ function getBorderedPoints(pts: PointData[], border: number): FullPointData[] {
 	return pts.map((p, i) => ({...p, inner: innerPoints[i]}));
 }
 
-function genPath([first, ...points]: FullPointData[]): string {
+function genPath([first, ...points]: (FullPointData[] | PointData[])): string {
 	const outerStart = `${first.coord[0]} ${first.coord[1]}`;
 	const outerEnd = outerStart;
 	const outer = points.map(p => `L${p.coord[0]},${p.coord[1]}`).join(' ');
+	if(!first.inner) {
+		return `M${outerStart} ${outer} L${outerEnd}`;
+	}
 	const innerStart = `${first.inner[0]} ${first.inner[1]}`;
 	const innerEnd = innerStart;
 	const inner = points.map(p => `L${p.inner[0]} ${p.inner[1]}`).reverse().join(' ');
 	return `M${outerStart} ${outer} L${outerEnd} L${innerStart} ${inner} L${innerEnd} L${outerEnd}`;
 }
 
-function genPolygon(allPoints: FullPointData[]): string {
+function genPolygon(allPoints: (FullPointData[] | PointData[])): string {
 	const xMax = Math.max(...allPoints.map(p => p.coord[0]));
 	const yMax = Math.max(...allPoints.map(p => p.coord[1]));
 	const [first, ...points] = allPoints;
 	const outerStart = getPointCss(first.coord, first.h, first.v, xMax, yMax);
 	const outerEnd = outerStart;
 	const outer = points.map(p => getPointCss(p.coord, p.h, p.v, xMax, yMax)).join(', ');
+	if(!first.inner) {
+		return `polygon(${outerStart}, ${outer}, ${outerEnd})`;
+		}
 	const innerStart = getPointCss(first.inner, first.h, first.v, xMax, yMax);
 	const innerEnd = innerStart;
 	const inner = points.map(p => getPointCss(p.inner, p.h, p.v, xMax, yMax)).reverse().join(', ')

@@ -1,13 +1,16 @@
 <script lang="ts">
+	// export const prerender = true;
+
 	import Point from './Point.svelte';
 	import { getPath, getPolygon, parsePointsFromSvgPath, type PointData } from '$lib';
 
+	let outerOnly = false;
 	let dims: [number, number] = [0, 0];
 	let border = 1;
 	let points: PointData[] = [];
 
-	$: clipPath = points.length ? getPolygon(points, border) : '';
-	$: path = points.length ? getPath(points, border) : '';
+	$: clipPath = points.length ? getPolygon(points, border, outerOnly) : '';
+	$: path = points.length ? getPath(points, border, outerOnly) : '';
 
 	function removePoint(i: number): void {
 		points = [...points];
@@ -36,7 +39,10 @@
 
 {#if points.length > 0}
 	<form on:submit|preventDefault={handleSubmit}>
-		<label>Border: <input type="number" bind:value={border}></label>
+		<label class="standalone">Outer only:
+			<input type="checkbox" bind:checked={outerOnly} />
+		</label>
+		<label  class="standalone">Border: <input type="number" bind:value={border}></label>
 		{#each points as point, i}
 			<fieldset>
 				<Point bind:coord={point.coord} bind:horizontal={point.h} bind:vertical={point.v}></Point>
@@ -112,5 +118,9 @@
 				border: 1px solid black;
 				border-radius: 8px;
 				display: inline-block;
+		}
+
+		.standalone {
+				display: block;
 		}
 </style>
