@@ -1,5 +1,4 @@
 <script lang="ts">
-	// export const prerender = true;
 
 	import Point from './Point.svelte';
 	import { getPath, getPolygon, parsePointsFromSvgPath, type PointData } from '$lib';
