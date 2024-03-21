@@ -9,9 +9,17 @@
 	$: clipPath = points.length ? getPolygon(points, border) : '';
 	$: path = points.length ? getPath(points, border) : '';
 
+	function removePoint(i: number): void {
+		points = [...points];
+		points.splice(i, 1);
+	}
 	function addPoint(): void {
 		const last = points[points.length - 1];
-		points.push({ ...last, coord: [...last.coord] });
+		points = [...points,{ ...last, coord: [...last.coord] }];
+	}
+
+	function reverse(): void {
+		points = [...points].reverse()
 	}
 
 	function handleSubmit(event: Event): void {
@@ -29,12 +37,14 @@
 {#if points.length > 0}
 	<form on:submit|preventDefault={handleSubmit}>
 		<label>Border: <input type="number" bind:value={border}></label>
-		{#each points as point}
+		{#each points as point, i}
 			<fieldset>
 				<Point bind:coord={point.coord} bind:horizontal={point.h} bind:vertical={point.v}></Point>
+				<button on:click={() => removePoint(i)}>Delete</button>
 			</fieldset>
 		{/each}
 		<button on:click={addPoint}>Add</button>
+		<button on:click={reverse}>Reverse points</button>
 	</form>
 	<hr>
 	<div>
